@@ -1,7 +1,12 @@
 # final_project.py
-# Tyson Trail
 #
-# 
+# Group name:
+# - Kernel Panic
+# Team members:
+# - Tyson Trail
+# - Kevin Amado
+#
+
 
 import pandas as pd
 
