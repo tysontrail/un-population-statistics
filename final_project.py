@@ -9,6 +9,7 @@
 #
 
 # Third party libraries
+from typing import List
 import pandas as pd
 import numpy as np
 
@@ -16,6 +17,7 @@ import numpy as np
 def main() -> None:
 
     # Stage 2: DataFrame Creation
+
     data: pd.DataFrame = load_and_merge_data()
 
     print(data)
@@ -25,38 +27,45 @@ def main() -> None:
     # Prompt User to Select Country
     while True:
         try:
-            country_or_area = input("Please enter a Country or Area: ")
+            country_or_area: str = input("Please enter a Country or Area: ")
 
-            if country_or_area in data.index.levels[0]:
-                # Create sub dataframe for country
-                sub_data = data.loc[country_or_area, :]
-                print()
-                print(sub_data)
+            valid_countries_or_areas: List[str] = data.index.levels[0]
+
+            if country_or_area in valid_countries_or_areas:
                 break
             else:
                 raise ValueError
         except ValueError:
             print("You must enter a valid Country or Area.\n")
 
+    # Create sub dataframe for country
+    country_data = data.loc[country_or_area, :]
+    print()
+    print(country_data)
+
     # Prompt User to Select Year
     while True:
         try:
-            year = int(input("Please choose from available Years: "))
+            year: int = int(input("Please choose from available Years: "))
 
-            if year in sub_data.index:
-                print()
-                # Print data for chosen country and year
-                print(sub_data.loc[year])
-                print()
+            if year in country_data.index:
                 break
             else:
                 raise ValueError
         except ValueError:
             print("Please choose from the available Years.")
 
+    print()
+    # Print data for chosen country and year
+    print(country_data.loc[year])
+    print()
+
     # Stage 4: Analyis and Calculations
+
+    # Add additional columns to the dataset
+    # data["Life expectancy at birth for both sexes (years)"]
     print("Aggregate Stats for the Dataset")
-    print(data.describe())
+    print(data.describe().T)
     print()
 
     # Stage 5: Export and Matplotlib
