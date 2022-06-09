@@ -10,12 +10,52 @@
 
 # Third party libraries
 import pandas as pd
+import numpy as np
 
 
 def main() -> None:
+
+    # Stage 2: DataFrame Creation
     data: pd.DataFrame = load_and_merge_data()
 
     print(data)
+
+    # Stage 3: User Entry
+
+    # Prompt User to Select Country
+    while True:
+        try:
+            country_or_area = input("Please enter a Country or Area: ")
+
+            if country_or_area in data.index.levels[0]:
+                # Create sub
+                sub_data = data.loc[country_or_area, :]
+                print()
+                print(sub_data)
+                break
+            else:
+                raise ValueError
+        except ValueError:
+            print("You must enter a valid Country or Area.\n")
+
+    # Prompt User to Select Year
+    while True:
+        try:
+            year = int(input("Please choose from available Years: "))
+
+            if year in sub_data.index:
+                print()
+                break
+            else:
+                raise ValueError
+        except ValueError:
+            print("Please choose from the available Years.")
+
+    # Stage 4: Analyis and Calculations
+    # print(describe(df))
+
+    # Stage 5: Export and Matplotlib
+    data.to_excel("data.xlsx")
 
 
 def load_and_merge_data() -> pd.DataFrame:
@@ -50,6 +90,7 @@ def load_and_merge_data() -> pd.DataFrame:
         pd.merge(m49, population, how="inner", on=["M49 Code"])
         .set_index(["Country or Area", "Year"])
         .sort_index()
+        .dropna()
     )
 
     return data
