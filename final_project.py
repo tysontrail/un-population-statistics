@@ -28,7 +28,7 @@ def main() -> None:
             country_or_area = input("Please enter a Country or Area: ")
 
             if country_or_area in data.index.levels[0]:
-                # Create sub
+                # Create sub dataframe for country
                 sub_data = data.loc[country_or_area, :]
                 print()
                 print(sub_data)
@@ -45,6 +45,9 @@ def main() -> None:
 
             if year in sub_data.index:
                 print()
+                # Print data for chosen country and year
+                print(sub_data.loc[year])
+                print()
                 break
             else:
                 raise ValueError
@@ -52,7 +55,9 @@ def main() -> None:
             print("Please choose from the available Years.")
 
     # Stage 4: Analyis and Calculations
-    # print(describe(df))
+    print("Aggregate Stats for the Dataset")
+    print(data.describe())
+    print()
 
     # Stage 5: Export and Matplotlib
     data.to_excel("data.xlsx")
