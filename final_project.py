@@ -11,7 +11,6 @@
 # Third party libraries
 from typing import List
 import pandas as pd
-from sqlalchemy import true
 
 
 def main() -> None:
