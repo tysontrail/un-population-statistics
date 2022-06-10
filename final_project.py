@@ -11,7 +11,7 @@
 # Third party libraries
 from typing import List
 import pandas as pd
-import numpy as np
+from sqlalchemy import true
 
 
 def main() -> None:
@@ -19,6 +19,17 @@ def main() -> None:
     # Stage 2: DataFrame Creation
 
     data: pd.DataFrame = load_and_merge_data()
+
+    # Add additional columns to the dataset
+    data["Life expectancy difference (years) from mean"] = (
+        data["Life expectancy at birth for both sexes (years)"]
+        - data["Life expectancy at birth for both sexes (years)"].mean()
+    )
+
+    data["Total fertility rate (children per woman) from mean"] = (
+        data["Total fertility rate (children per women)"]
+        - data["Total fertility rate (children per women)"].mean()
+    )
 
     print(data)
 
@@ -41,12 +52,20 @@ def main() -> None:
     # Create sub dataframe for country
     country_data = data.loc[country_or_area, :]
     print()
-    print(country_data)
+
+    # Show user available years for Country
+    print("Available Years:\n")
+    index = country_data.index
+    for i in index:
+        print(i)
+    print()
 
     # Prompt User to Select Year
     while True:
         try:
-            year: int = int(input("Please choose from available Years: "))
+            year: int = int(
+                input("Please choose to display data from available Years above: ")
+            )
 
             if year in country_data.index:
                 break
@@ -62,11 +81,37 @@ def main() -> None:
 
     # Stage 4: Analyis and Calculations
 
-    # Add additional columns to the dataset
-    # data["Life expectancy at birth for both sexes (years)"]
-    print("Aggregate Stats for the Dataset")
+    # Aggregation computation for a subset of the data
+    print("Aggregate Mean for all Years for the Country:")
+    print()
+    print(country_data.mean(numeric_only=True))
+    print()
+
+    # Use of .describe() method for combined dataset
+    print("Aggregate Stats for all Years for the Dataset:")
     print(data.describe().T)
     print()
+
+    # Use of groupby() method
+    print("Fastest growing Countries by average annual rate of increase (percent):")
+    print()
+    print(
+        data.groupby("Country or Area",)["Population annual rate of increase (percent)"]
+        .mean()
+        .sort_values(ascending=False)
+    )
+    print()
+
+    # Use masking operation
+    print("Countries with Years of life expectency over 80 years:")
+    print()
+    life_expectancy = data["Life expectancy at birth for both sexes (years)"]
+    greater_than_80 = life_expectancy > 80
+    print(life_expectancy[greater_than_80])
+    print()
+
+    # Matplotlib
+    # TO DO
 
     # Stage 5: Export and Matplotlib
     data.to_excel("data.xlsx")
