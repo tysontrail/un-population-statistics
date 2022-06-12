@@ -22,7 +22,12 @@ from typing import (
 )
 
 
-def print_dependencies_note():
+def print_dependencies_note() -> None:
+    """Print the dependencies required by this program.
+
+    Returns:
+        None.
+    """
     print("---")
     print("Note: this program requires the following dependencies:")
     print("    matplotlib==3.5.1")
@@ -40,6 +45,11 @@ def print_dependencies_note():
 
 
 def main() -> None:
+    """Entrypoint of this program.
+
+    Returns:
+        None.
+    """
     # Stage 0: Ensure user has the required dependencies.
     print_dependencies_note()
 
@@ -74,6 +84,11 @@ def main() -> None:
 
 
 def load_and_merge_data() -> pd.DataFrame:
+    """Load data from three data sources and aggregates them into one.
+
+    Returns:
+        pd.DataFrame: A Pandas DataFrame with the merged data.
+    """
     # Import your chosen data into a Pandas DataFrames.
     population_1: pd.DataFrame = pd.read_excel(
         "un-population-datasets/un-population-dataset-1.xlsx",
@@ -121,6 +136,14 @@ def load_and_merge_data() -> pd.DataFrame:
 
 
 def add_life_expectancy_column(data: pd.DataFrame) -> None:
+    """Add a column with the life expectancy distance from the mean.
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Returns:
+        None.
+    """
     data["Life expectancy difference (years) from mean"] = (
         data["Life expectancy at birth for both sexes (years)"]
         - data["Life expectancy at birth for both sexes (years)"].mean()
@@ -128,13 +151,32 @@ def add_life_expectancy_column(data: pd.DataFrame) -> None:
 
 
 def add_fertility_rate_column(data: pd.DataFrame) -> None:
-    data["Total fertility rate (children per woman) from mean"] = (
+    """Add a column with the difference in fertility rate from the mean.
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Returns:
+        None.
+    """
+    data["Total fertility difference (children per woman) from mean"] = (
         data["Total fertility rate (children per women)"]
         - data["Total fertility rate (children per women)"].mean()
     )
 
 
 def get_country(data: pd.DataFrame) -> str:
+    """Prompt the user for a valid country.
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Raises:
+        ValueError: If the country is invalid.
+
+    Returns:
+        str: The country after validation.
+    """
     # Prompt User to Select Country
     while True:
         try:
@@ -153,6 +195,17 @@ def get_country(data: pd.DataFrame) -> str:
 
 
 def get_year(country_data: pd.DataFrame) -> int:
+    """Prompt the user for a valid year for the respective country data.
+
+    Args:
+        country_data (pd.DataFrame): _description_
+
+    Raises:
+        ValueError: If the year is not valid
+
+    Returns:
+        int: The year after validation.
+    """
     # Prompt User to Select Year
     while True:
         try:
@@ -178,11 +231,27 @@ def get_year(country_data: pd.DataFrame) -> int:
 
 
 def print_indented(obj: Any) -> None:
+    """Print the `obj` intending by 4 spaces.
+
+    Args:
+        obj (Any): Any object that implements the `__str__` method.
+
+    Returns:
+        None.
+    """
     output: str = textwrap.indent(str(obj), prefix="    ")
     print(output)
 
 
 def print_available_countries(data: pd.DataFrame) -> None:
+    """Print the available countries in the data.
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Returns:
+        None.
+    """
     print("---")
     print("Available countries:")
     print()
@@ -191,6 +260,14 @@ def print_available_countries(data: pd.DataFrame) -> None:
 
 
 def print_complete_dataset(data: pd.DataFrame) -> None:
+    """Print the complete dataset in the data
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Returns:
+        None.
+    """
     print("---")
     print("Complete dataset:")
     print()
@@ -199,6 +276,14 @@ def print_complete_dataset(data: pd.DataFrame) -> None:
 
 
 def print_available_years_for_country(years_str: str) -> None:
+    """Print the available years.
+
+    Args:
+        years_str (str): A comma separated representation of the years.
+
+    Returns:
+        None.
+    """
     print("---")
     print("Available Years:")
     print()
@@ -211,6 +296,16 @@ def print_data_for_country_and_year(
     country_data: pd.DataFrame,
     year: int,
 ) -> None:
+    """Print the data for a country and a year.
+
+    Args:
+        country (str): Country name.
+        country_data (pd.DataFrame): DataFrame with the country data.
+        year (int): The year.
+
+    Returns:
+        None.
+    """
     print("---")
     print(f"Data available for {country}, year {year}:")
     print()
@@ -223,6 +318,16 @@ def print_mean_for_all_years_for_country(
     country_data: pd.DataFrame,
     years_str: str,
 ) -> None:
+    """Print the mean for all the years of a country.
+
+    Args:
+        country (str): Country name.
+        country_data (pd.DataFrame): DataFrame with the country data.
+        years_str (str): Years separated by comma.
+
+    Returns:
+        None.
+    """
     print("---")
     print(f"Aggregate mean for years: {years_str}, for {country}:")
     print()
@@ -231,6 +336,14 @@ def print_mean_for_all_years_for_country(
 
 
 def print_stats_for_all_years_all_countries(data: pd.DataFrame) -> None:
+    """Print stats for all years and countries using the describe method.
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Returns:
+        None.
+    """
     # Use of .describe() method for combined dataset
     print("---")
     print("Aggregate stats for all years and all countries:")
@@ -240,6 +353,14 @@ def print_stats_for_all_years_all_countries(data: pd.DataFrame) -> None:
 
 
 def print_fastest_growing_countries(data: pd.DataFrame) -> None:
+    """Print the fastest growing countries in the data.
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Returns:
+        None.
+    """
     # Use of groupby() method
     print("---")
     print(
@@ -258,6 +379,14 @@ def print_fastest_growing_countries(data: pd.DataFrame) -> None:
 
 
 def print_countries_with_life_expectancy_over_80(data: pd.DataFrame) -> None:
+    """Print the countries with a life expectancy over 80 years.
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Returns:
+        None.
+    """
     # Use masking operation
     print("---")
     print("Countries with life expectancy over 80 years:")
@@ -269,6 +398,14 @@ def print_countries_with_life_expectancy_over_80(data: pd.DataFrame) -> None:
 
 
 def export_as_xlsx(data: pd.DataFrame) -> None:
+    """Save the dataset as an xlsx file.
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Returns:
+        None.
+    """
     print("---")
     print("Exporting data...")
     data.to_excel("full-dataset.xlsx")
@@ -278,10 +415,26 @@ def export_as_xlsx(data: pd.DataFrame) -> None:
 
 
 def export_as_matplotlib(data: pd.DataFrame) -> None:
+    """Create and save a comparison between life expectancy in 4 countries.
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Returns:
+        None.
+    """
     plt.style.use("classic")
     figure = plt.figure()
 
     def _plot_country(country: str) -> None:
+        """Plot the data associated to a country.
+
+        Args:
+            country (str): The country name.
+
+        Returns:
+            None.
+        """
         country_data = data.loc[country, :]
         values_x = country_data.index
         values_y = country_data[
