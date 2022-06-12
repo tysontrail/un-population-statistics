@@ -1,4 +1,4 @@
-# final_project.py
+# main.py
 #
 # Group name:
 # - Kernel Panic
@@ -74,11 +74,11 @@ def main() -> None:
 def load_and_merge_data() -> pd.DataFrame:
     # Import your chosen data into a Pandas DataFrames.
     population_1: pd.DataFrame = pd.read_excel(
-        "UN Population Datasets/UN Population Dataset 1.xlsx",
+        "un-population-datasets/un-population-dataset-1.xlsx",
         usecols=["M49 Code", "Year", "Region/Country/Area", "Series", "Value"],
     )
     population_2: pd.DataFrame = pd.read_excel(
-        "UN Population Datasets/UN Population Dataset 2.xlsx",
+        "un-population-datasets/un-population-dataset-2.xlsx",
         usecols=["M49 Code", "Year", "Region/Country/Area", "Series", "Value"],
     )
     # You must use at least two merge/join operations
@@ -91,7 +91,7 @@ def load_and_merge_data() -> pd.DataFrame:
         .reset_index()
     )
     m49: pd.DataFrame = pd.read_excel(
-        "UN Population Datasets/UN M49.xlsx",
+        "un-population-datasets/un-m49.xlsx",
         usecols=[
             "M49 Code",
             "Global Name",
@@ -269,7 +269,8 @@ def print_countries_with_life_expectancy_over_80(data: pd.DataFrame) -> None:
 def export_as_xlsx(data: pd.DataFrame) -> None:
     print("---")
     print("Exporting data...")
-    data.to_excel("data.xlsx")
+    data.to_excel("full-dataset.xlsx")
+    data.to_csv("full-dataset.csv")
     print("Done.")
     print()
 
