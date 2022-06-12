@@ -8,6 +8,7 @@
 # - Kevin Amado
 #
 
+
 # Third party libraries
 import pandas as pd  # Tested with pandas==1.4.2
 # Standard library
@@ -19,7 +20,25 @@ from typing import (
 )
 
 
+def print_dependencies_note():
+    print("---")
+    print("Note: this program requires the following dependencies:")
+    print("    openpyxl==3.0.9")
+    print("    pandas==1.4.2")
+    print("    python==3.9")
+    print()
+    print(
+        "If you encounter any error, "
+        "please make sure you are using the exact versions displayed above "
+        "and try again."
+    )
+    print()
+
+
 def main() -> None:
+    # Stage 0: Ensure user has the required dependencies.
+    print_dependencies_note()
+
     # Stage 2: DataFrame Creation
     data: pd.DataFrame = load_and_merge_data()
 
