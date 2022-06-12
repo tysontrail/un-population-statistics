@@ -55,8 +55,6 @@ def main() -> None:
 
     # Stage 2: DataFrame Creation
     data: pd.DataFrame = load_and_merge_data()
-
-    # Add additional columns to the dataset
     add_life_expectancy_column(data)
     add_fertility_rate_column(data)
 
@@ -66,14 +64,13 @@ def main() -> None:
     print_available_countries(data)
     country: str = get_country(data)
     country_data = data.loc[country, :]
-    years: Tuple[int, ...] = tuple(country_data.index)
-    years_str: str = ", ".join(map(str, years))
-    print_available_years_for_country(years_str)
+    years: str = ", ".join(map(str, country_data.index))
+    print_available_years_for_country(years)
     year: int = get_year(country_data)
 
     # Stage 4: Analysis and Calculations
     print_data_for_country_and_year(country, country_data, year)
-    print_mean_for_all_years_for_country(country, country_data, years_str)
+    print_mean_for_all_years_for_country(country, country_data, years)
     print_stats_for_all_years_all_countries(data)
     print_fastest_growing_countries(data)
     print_countries_with_life_expectancy_over_80(data)
@@ -189,8 +186,9 @@ def get_country(data: pd.DataFrame) -> str:
             else:
                 raise ValueError
         except ValueError:
-            print("You must enter a valid Country or Area.\n")
+            print("You must enter a valid Country or Area.")
 
+    print()
     return country
 
 
@@ -275,11 +273,11 @@ def print_complete_dataset(data: pd.DataFrame) -> None:
     print()
 
 
-def print_available_years_for_country(years_str: str) -> None:
+def print_available_years_for_country(years: str) -> None:
     """Print the available years.
 
     Args:
-        years_str (str): A comma separated representation of the years.
+        years (str): A comma separated representation of the years.
 
     Returns:
         None.
@@ -287,7 +285,7 @@ def print_available_years_for_country(years_str: str) -> None:
     print("---")
     print("Available Years:")
     print()
-    print_indented(years_str)
+    print_indented(years)
     print()
 
 
@@ -316,20 +314,20 @@ def print_data_for_country_and_year(
 def print_mean_for_all_years_for_country(
     country: str,
     country_data: pd.DataFrame,
-    years_str: str,
+    years: str,
 ) -> None:
     """Print the mean for all the years of a country.
 
     Args:
         country (str): Country name.
         country_data (pd.DataFrame): DataFrame with the country data.
-        years_str (str): Years separated by comma.
+        years (str): Years separated by comma.
 
     Returns:
         None.
     """
     print("---")
-    print(f"Aggregate mean for years: {years_str}, for {country}:")
+    print(f"Aggregate mean for years: {years}, for {country}:")
     print()
     print_indented(country_data.mean(numeric_only=True))
     print()
@@ -460,7 +458,6 @@ def export_as_matplotlib(data: pd.DataFrame) -> None:
     plt.subplot(2, 2, 4)
     _plot_country("Sierra Leone")
     figure.tight_layout(h_pad=1, w_pad=2)
-
     figure.savefig("life-expectancy-over-time.png")
 
 
