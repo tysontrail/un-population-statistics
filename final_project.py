@@ -49,6 +49,7 @@ def main() -> None:
     print_complete_dataset(data)
 
     # Stage 3: User Entry
+    print_available_countries(data)
     country: str = get_country(data)
     country_data = data.loc[country, :]
     years: Tuple[int, ...] = tuple(country_data.index)
@@ -177,6 +178,14 @@ def get_year(country_data: pd.DataFrame) -> int:
 def print_indented(obj: Any) -> None:
     output: str = textwrap.indent(str(obj), prefix="    ")
     print(output)
+
+
+def print_available_countries(data: pd.DataFrame) -> None:
+    print("---")
+    print("Available countries:")
+    print()
+    print_indented(data.index.unique("Country or Area").values)
+    print()
 
 
 def print_complete_dataset(data: pd.DataFrame) -> None:
