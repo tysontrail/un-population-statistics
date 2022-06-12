@@ -10,6 +10,8 @@
 
 
 # Third party libraries
+import matplotlib.pyplot as plt  # Tested with matplotlib==3.5.1
+import numpy as np  # Tested with numpy==1.21.5
 import pandas as pd  # Tested with pandas==1.4.2
 # Standard library
 import textwrap
@@ -23,6 +25,8 @@ from typing import (
 def print_dependencies_note():
     print("---")
     print("Note: this program requires the following dependencies:")
+    print("    matplotlib==3.5.1")
+    print("    numpy==1.21.5")
     print("    openpyxl==3.0.9")
     print("    pandas==1.4.2")
     print("    python==3.9")
@@ -64,11 +68,9 @@ def main() -> None:
     print_fastest_growing_countries(data)
     print_countries_with_life_expectancy_over_80(data)
 
-    # Matplotlib
-    # TO DO
-
     # Stage 5: Export and Matplotlib
     export_as_xlsx(data)
+    export_as_matplotlib(data)
 
 
 def load_and_merge_data() -> pd.DataFrame:
@@ -273,6 +275,40 @@ def export_as_xlsx(data: pd.DataFrame) -> None:
     data.to_csv("full-dataset.csv")
     print("Done.")
     print()
+
+
+def export_as_matplotlib(data: pd.DataFrame) -> None:
+    plt.style.use("classic")
+    figure = plt.figure()
+
+    def _plot_country(country: str) -> None:
+        country_data = data.loc[country, :]
+        values_x = country_data.index
+        values_y = country_data[
+            "Life expectancy at birth for both sexes (years)"
+        ]
+        plt.bar(values_x, values_y, color="#66ff00")
+        plt.grid(color="#cccccc", linestyle="--", axis="y", alpha=0.75)
+        plt.grid(color="#cccccc", linestyle="--", axis="x", alpha=0.75)
+        plt.xticks(values_x, values_x)
+        plt.xlabel("Year", fontsize=10)
+        plt.ylim((40, 85))
+        plt.yticks(np.arange(40, 85, step=5))
+        plt.ylabel("Life expectancy (years)", fontsize=10)
+        plt.title(country, fontsize=10)
+
+    figure.suptitle("Life expectancy over time", fontsize=14)
+    plt.subplot(2, 2, 1)
+    _plot_country("China, Hong Kong Special Administrative Region")
+    plt.subplot(2, 2, 2)
+    _plot_country("Canada")
+    plt.subplot(2, 2, 3)
+    _plot_country("Colombia")
+    plt.subplot(2, 2, 4)
+    _plot_country("Sierra Leone")
+    figure.tight_layout(h_pad=1, w_pad=2)
+
+    figure.savefig("life-expectancy-over-time.png")
 
 
 if __name__ == "__main__":
