@@ -422,8 +422,6 @@ def export_life_expectancy_as_matplotlib(data: pd.DataFrame) -> None:
     Returns:
         None.
     """
-    plt.style.use("classic")
-    figure = plt.figure()
 
     def _plot_country(country: str) -> None:
         """Plot the data associated to a country.
@@ -449,15 +447,32 @@ def export_life_expectancy_as_matplotlib(data: pd.DataFrame) -> None:
         plt.ylabel("Life expectancy (years)", fontsize=10)
         plt.title(country, fontsize=10)
 
+    plt.style.use("classic")
+    figure = plt.figure()
+
+    # List with the countries ordered by life expectancy
+    countries_sorted: pd.Index = (
+        data.groupby(
+            "Country or Area",
+        )["Life expectancy at birth for both sexes (years)"]
+        .max()
+        .sort_values(ascending=False)
+        .index.unique("Country or Area")
+    )
+
+    # Pick only 4 countries,
+    # the one with max life expectancy,
+    # the one with the min life expectancy,
+    # and 2 in between
+    selected_countries: Tuple[str, ...] = countries_sorted[
+        np.linspace(0, len(countries_sorted) - 1, num=4, dtype=np.uint64)
+    ]
+
     figure.suptitle("Life expectancy over time", fontsize=14)
-    plt.subplot(2, 2, 1)
-    _plot_country("China, Hong Kong Special Administrative Region")
-    plt.subplot(2, 2, 2)
-    _plot_country("Canada")
-    plt.subplot(2, 2, 3)
-    _plot_country("Colombia")
-    plt.subplot(2, 2, 4)
-    _plot_country("Sierra Leone")
+    for index in range(4):
+        plt.subplot(2, 2, index + 1)
+        _plot_country(selected_countries[index])
+
     figure.tight_layout(h_pad=1, w_pad=2)
     figure.savefig("life-expectancy-over-time.png")
 
@@ -471,10 +486,6 @@ def export_total_fertility_rate_as_matplotlib(data: pd.DataFrame) -> None:
     Returns:
         None.
     """
-
-    plt.style.use("classic")
-    figure = plt.figure()
-    figure.suptitle("Total fertility rate", fontsize=14)
 
     def _plot_year(year: int) -> None:
         """Plot the data associated to a year.
@@ -494,8 +505,11 @@ def export_total_fertility_rate_as_matplotlib(data: pd.DataFrame) -> None:
         plt.ylabel("Number of countries", fontsize=10)
         plt.title(f"Year {year}", fontsize=10)
 
-    years = sorted(data.index.unique("Year"))
+    plt.style.use("classic")
+    figure = plt.figure()
+    figure.suptitle("Total fertility rate", fontsize=14)
 
+    years = sorted(data.index.unique("Year"))
     for index, year in enumerate(years, start=1):
         series = data.loc[data.index.get_level_values("Year") == year][
             "Total fertility rate (children per women)"
