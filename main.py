@@ -77,7 +77,8 @@ def main() -> None:
 
     # Stage 5: Export and Matplotlib
     export_as_xlsx(data)
-    export_as_matplotlib(data)
+    export_life_expectancy_as_matplotlib(data)
+    export_total_fertility_rate_as_matplotlib(data)
 
 
 def load_and_merge_data() -> pd.DataFrame:
@@ -412,7 +413,7 @@ def export_as_xlsx(data: pd.DataFrame) -> None:
     print()
 
 
-def export_as_matplotlib(data: pd.DataFrame) -> None:
+def export_life_expectancy_as_matplotlib(data: pd.DataFrame) -> None:
     """Create and save a comparison between life expectancy in 4 countries.
 
     Args:
@@ -459,6 +460,51 @@ def export_as_matplotlib(data: pd.DataFrame) -> None:
     _plot_country("Sierra Leone")
     figure.tight_layout(h_pad=1, w_pad=2)
     figure.savefig("life-expectancy-over-time.png")
+
+
+def export_total_fertility_rate_as_matplotlib(data: pd.DataFrame) -> None:
+    """Create and save the evolution in fertility rate.
+
+    Args:
+        data (pd.DataFrame): Merged DataFrame as by `load_and_merge_data()`.
+
+    Returns:
+        None.
+    """
+
+    plt.style.use("classic")
+    figure = plt.figure()
+    figure.suptitle("Total fertility rate", fontsize=14)
+
+    def _plot_year(year: int) -> None:
+        """Plot the data associated to a year.
+
+        Args:
+            year (int): The year.
+
+        Returns:
+            None.
+        """
+        plt.hist(series, color="#66ff00")
+        plt.grid(color="#cccccc", linestyle="--", axis="y", alpha=0.75)
+        plt.grid(color="#cccccc", linestyle="--", axis="x", alpha=0.75)
+        plt.xlabel("Number of children per women", fontsize=10)
+        plt.ylim((0, 50))
+        plt.yticks(np.arange(0, 50, step=10))
+        plt.ylabel("Number of countries", fontsize=10)
+        plt.title(f"Year {year}", fontsize=10)
+
+    years = sorted(data.index.unique("Year"))
+
+    for index, year in enumerate(years, start=1):
+        series = data.loc[data.index.get_level_values("Year") == year][
+            "Total fertility rate (children per women)"
+        ]
+        plt.subplot(len(years), 1, index)
+        _plot_year(year)
+
+    figure.tight_layout(h_pad=1, w_pad=2)
+    figure.savefig("total-fertility-rate.png")
 
 
 if __name__ == "__main__":
