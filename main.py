@@ -89,11 +89,11 @@ def load_and_merge_data() -> pd.DataFrame:
     """
     # Import your chosen data into a Pandas DataFrames.
     population_1: pd.DataFrame = pd.read_excel(
-        "un-population-datasets/un-population-dataset-1.xlsx",
+        "input-datasets/un-population-dataset-1.xlsx",
         usecols=["M49 Code", "Year", "Region/Country/Area", "Series", "Value"],
     )
     population_2: pd.DataFrame = pd.read_excel(
-        "un-population-datasets/un-population-dataset-2.xlsx",
+        "input-datasets/un-population-dataset-2.xlsx",
         usecols=["M49 Code", "Year", "Region/Country/Area", "Series", "Value"],
     )
     # You must use at least two merge/join operations
@@ -106,7 +106,7 @@ def load_and_merge_data() -> pd.DataFrame:
         .reset_index()
     )
     m49: pd.DataFrame = pd.read_excel(
-        "un-population-datasets/un-m49.xlsx",
+        "input-datasets/un-m49.xlsx",
         usecols=[
             "M49 Code",
             "Global Name",
@@ -407,8 +407,8 @@ def export_as_xlsx(data: pd.DataFrame) -> None:
     """
     print("---")
     print("Exporting data...")
-    data.to_excel("full-dataset.xlsx")
-    data.to_csv("full-dataset.csv")
+    data.to_excel("output-datasets/full-dataset.xlsx")
+    data.to_csv("output-datasets/full-dataset.csv")
     print("Done.")
     print()
 
@@ -474,7 +474,7 @@ def export_life_expectancy_as_matplotlib(data: pd.DataFrame) -> None:
         _plot_country(selected_countries[index])
 
     figure.tight_layout(h_pad=1, w_pad=2)
-    figure.savefig("life-expectancy-over-time.png")
+    figure.savefig("plots/life-expectancy-over-time.png")
 
 
 def export_total_fertility_rate_as_matplotlib(data: pd.DataFrame) -> None:
@@ -518,7 +518,7 @@ def export_total_fertility_rate_as_matplotlib(data: pd.DataFrame) -> None:
         _plot_year(year)
 
     figure.tight_layout(h_pad=1, w_pad=2)
-    figure.savefig("total-fertility-rate.png")
+    figure.savefig("plots/total-fertility-rate.png")
 
 
 if __name__ == "__main__":
